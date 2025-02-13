@@ -30,7 +30,7 @@ module tt_um_spatial_processing_unit (
     input  wire       rst_n    // Active low reset
 );
 
-    // Generate active-high internal reset:
+    // Generate an active-high internal reset signal:
     wire reset = ~rst_n;
 
     // Extract design signals from physical pins:
@@ -39,7 +39,7 @@ module tt_um_spatial_processing_unit (
     wire [2:0] C = uio_in[2:0];
     wire [2:0] D = uio_in[5:3];
 
-    // Register inputs on the clock edge with asynchronous reset:
+    // Register the inputs with asynchronous reset:
     reg [3:0] A_reg, B_reg;
     reg [2:0] C_reg, D_reg;
     always @(posedge clk or posedge reset) begin
@@ -56,22 +56,22 @@ module tt_um_spatial_processing_unit (
         end
     end
 
-    // --- Vector Manhattan Distance Logic ---
-    // Zero-extend 3-bit signals to 4-bit:
-    wire [3:0] C_ext = {1'b0, C_reg};
-    wire [3:0] D_ext = {1'b0, D_reg};
+    // Instantiate the Vector Manhattan Distance module:
+    wire [3:0] distance_high;
+    wire [3:0] distance_low;
+    VectorManhattanDistance vmd_inst (
+        .A(A_reg),
+        .B(B_reg),
+        .C(C_reg),
+        .D(D_reg),
+        .Distance_high(distance_high),
+        .Distance_low(distance_low)
+    );
 
-    // Compute absolute differences:
-    wire [3:0] deltaX = (A_reg >= C_ext) ? (A_reg - C_ext) : (C_ext - A_reg);
-    wire [3:0] deltaY = (B_reg >= D_ext) ? (B_reg - D_ext) : (D_ext - B_reg);
+    // Pack the result into the 8-bit output:
+    assign uo_out = {distance_high, distance_low};
 
-    // Sum the differences to compute Manhattan distance:
-    wire [7:0] distance = deltaX + deltaY;
-
-    // Drive the dedicated output port with the 8-bit distance.
-    assign uo_out = distance;
-
-    // Tie unused outputs to zero.
+    // Tie the unused bidirectional outputs to zero:
     assign uio_out = 8'b0;
     assign uio_oe  = 8'b0;
 
