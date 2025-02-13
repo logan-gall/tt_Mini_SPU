@@ -59,18 +59,20 @@ module tt_um_spatial_processing_unit (
         end
     end
 
-    // Simple addition operation: sum = A + B + C + D
-    reg [7:0] sum;
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            sum <= 8'd0;
-        end else begin
-            sum <= A_reg + B_reg + C_reg + D_reg;
-        end
-    end
+    // Instantiate the addition module from addition.v
+    wire [7:0] add_result;
+    addition add_inst (
+        .clk(clk),
+        .reset(reset),
+        .A(A_reg),
+        .B(B_reg),
+        .C(C_reg),
+        .D(D_reg),
+        .sum(add_result)
+    );
 
     // Drive the dedicated output port with our 8-bit sum.
-    assign uo_out = sum;
+    assign uo_out = add_result;
 
     // Since we are not driving any bidirectional signals, set these to zero.
     assign uio_out = 8'b0;

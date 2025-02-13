@@ -27,12 +27,12 @@ async def test_project(dut):
     # Test 1: Addition
     #   Inputs:
     #     ui_in  = {B, A} = {8, 4}  -> A=4, B=8
-    #     uio_in = {OpSel, D, C} = {00, 2, 6}  -> C=6, D=2
+    #     uio_in = {ignored, D, C} = {xx, 2, 6}  -> C=6, D=2
     #   Expected output: 4 + 8 + 6 + 2 = 20
     #-------------------------------------------------------------------------
     dut._log.info("Test 1: Addition")
     dut.ui_in.value  = (8 << 4) | 4         # A=4, B=8
-    dut.uio_in.value = (0 << 6) | (2 << 3) | 6  # OpSel ignored, D=2, C=6
+    dut.uio_in.value = (0 << 6) | (2 << 3) | 6  # D=2, C=6 (upper bits ignored)
     await ClockCycles(dut.clk, 4)
     expected = 20
     actual = int(dut.uo_out.value)
@@ -43,7 +43,7 @@ async def test_project(dut):
     # Test 2: Addition
     #   Inputs:
     #     ui_in  = {B, A} = {3, 5}  -> A=5, B=3
-    #     uio_in = {OpSel, D, C} = {00, 7, 1}  -> C=1, D=7
+    #     uio_in = {ignored, D, C} = {xx, 7, 1}  -> C=1, D=7
     #   Expected output: 5 + 3 + 1 + 7 = 16
     #-------------------------------------------------------------------------
     dut._log.info("Test 2: Addition")
@@ -59,7 +59,7 @@ async def test_project(dut):
     # Test 3: Addition
     #   Inputs:
     #     ui_in  = {B, A} = {3, 2}  -> A=2, B=3
-    #     uio_in = {OpSel, D, C} = {00, 1, 5}  -> C=5, D=1
+    #     uio_in = {ignored, D, C} = {xx, 1, 5}  -> C=5, D=1
     #   Expected output: 2 + 3 + 5 + 1 = 11
     #-------------------------------------------------------------------------
     dut._log.info("Test 3: Addition")
@@ -75,7 +75,7 @@ async def test_project(dut):
     # Test 4: Addition
     #   Inputs:
     #     ui_in  = {B, A} = {3, 2}  -> A=2, B=3
-    #     uio_in = {OpSel, D, C} = {00, 5, 4}  -> C=4, D=5
+    #     uio_in = {ignored, D, C} = {xx, 5, 4}  -> C=4, D=5
     #   Expected output: 2 + 3 + 4 + 5 = 14
     #-------------------------------------------------------------------------
     dut._log.info("Test 4: Addition")
