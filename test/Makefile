@@ -10,7 +10,8 @@ PROJECT_SOURCES = \
     VectorManhattanDistance.v \
     VectorBoxArea.v \
     RasterFocalMean.v \
-    TensorMultiply.v
+    TensorMultiply.v \
+	addition.v
 
 ifneq ($(GATES),yes)
 
