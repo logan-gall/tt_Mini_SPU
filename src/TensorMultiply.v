@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 module TensorMultiply(
     input  wire [3:0] A, 
     input  wire [3:0] B, 

@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+
 // Vector Manhattan Distance Module
 module VectorManhattanDistance(
     input  wire [3:0] A,  // 4-bit

@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+
 module VectorBoxArea(
     input  wire [3:0] A, 
     input  wire [3:0] B, 
