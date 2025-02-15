@@ -23,9 +23,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module tt_um_spatial_processing_unit (
-    input  wire [7:0] ui_in,   // [3:0]=A, [7:4]=B
-    output wire [7:0] uo_out,  // 8-bit output: {Result_high, Result_low}
-    input  wire [7:0] uio_in,  // [2:0]=C, [5:3]=D, [7:6]=OpSel
+    input  wire [7:0] ui_in,   // [7:4] = Op, [3:0] = Q
+    output wire [7:0] uo_out,  // [7:4] = M,  [3:0] = N
+    input  wire [7:0] uio_in,  // [7:4] = A / C, [3:0] = B / D
     output wire [7:0] uio_out, // Not used - tie to zero
     output wire [7:0] uio_oe,  // Not used - tie to zero
     input  wire       ena,
@@ -37,54 +37,61 @@ module tt_um_spatial_processing_unit (
     wire reset = ~rst_n;
 
     // Extract design signals from physical pins:
-    wire [3:0] A = ui_in[3:0];
-    wire [3:0] B = ui_in[7:4];
-    wire [2:0] C = uio_in[2:0];
-    wire [2:0] D = uio_in[5:3];
-    wire [1:0] OpSel = uio_in[7:6];
+    wire [3:0] A = uio_in[7:4];  // THESE NEED A MUX/SEL
+    wire [3:0] B = uio_in[3:0];
+    wire [3:0] C = uio_in[7:4];
+    wire [3:0] D = uio_in[3:0];
+    wire [3:0] Op = ui_in[7:4];
+    wire [3:0] Q  = ui_in[3:0];
 
     // Register the inputs (including OpSel) with asynchronous reset:
     reg [3:0] A_reg, B_reg;
-    reg [2:0] C_reg, D_reg;
-    reg [1:0] OpSel_reg;
+    reg [3:0] C_reg, D_reg;
+    reg [3:0] M_reg, N_reg;
+    reg [3:0] Op_reg, Q_reg;
+    
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            A_reg    <= 4'd0;
+            A_reg    <= 4'd0; // RESET ALL TO 0, 4-bits each
             B_reg    <= 4'd0;
-            C_reg    <= 3'd0;
-            D_reg    <= 3'd0;
-            OpSel_reg<= 2'd0;
+            C_reg    <= 4'd0;
+            D_reg    <= 4'd0;
+            M_reg    <= 4'd0;
+            N_reg    <= 4'd0;
+            Op_reg   <= 4'd0;
+            Q_reg    <= 4'd0;
         end else begin
-            A_reg    <= A;
+            A_reg    <= A; // THESE NEED TO BE UPDATED
             B_reg    <= B;
             C_reg    <= C;
             D_reg    <= D;
-            OpSel_reg<= OpSel;
+            Op_reg   <= Op;
+            Q_reg    <= Q;
         end
     end
 
     // Instantiate the Vector Manhattan Distance module:
-    wire [3:0] distance_high;
-    wire [3:0] distance_low;
+    wire [3:0] dist_M;
+    wire [3:0] dist_N;
     VectorManhattanDistance vmd_inst (
         .A(A_reg),
         .B(B_reg),
         .C(C_reg),
         .D(D_reg),
-        .Distance_high(distance_high),
-        .Distance_low(distance_low)
+        .Distance_high(dist_M),
+        .Distance_low(dist_N)
     );
 
     // Instantiate the Vector Box Area module:
-    wire [3:0] area_high;
-    wire [3:0] area_low;
+    wire [3:0] area_M;
+    wire [3:0] area_N;
     VectorBoxArea vba_inst (
         .A(A_reg),
         .B(B_reg),
         .C(C_reg),
         .D(D_reg),
-        .Area_high(area_high),
-        .Area_low(area_low)
+        .Area_high(area_M),
+        .Area_low(area_N)
     );
 
     // Select the result based on OpSel:
@@ -96,9 +103,9 @@ module tt_um_spatial_processing_unit (
         if (reset)
             result <= 8'd0;
         else begin
-            case (OpSel_reg)
-                2'b00: result <= {distance_high, distance_low};
-                2'b01: result <= {area_high, area_low};
+            case (Op_reg)
+                2'b00: result <= {dist_M, dist_N};
+                2'b01: result <= {area_M, area_N};
                 default: result <= 8'd0;
             endcase
         end
