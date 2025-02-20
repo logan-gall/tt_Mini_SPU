@@ -7,7 +7,6 @@ TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
 PROJECT_SOURCES = \
 	dataqmux.v \
-	main.v \
 	op-areaperim.v \
 	op-attrreclass.v \
 	op-basicbuffer.v \
