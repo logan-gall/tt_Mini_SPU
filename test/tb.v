@@ -27,7 +27,7 @@ module tb ();
 `endif
 
   // Replace tt_um_example with your module name:
-  tt_um_spatial_processing_unit user_project (
+  tt_umn_tinyspu user_project (
 
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST

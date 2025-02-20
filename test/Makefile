@@ -6,12 +6,24 @@ SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
 PROJECT_SOURCES = \
-    tt_um_spatial_processing_unit.v \
-    VectorManhattanDistance.v \
-    VectorBoxArea.v \
-    RasterFocalMean.v \
-    TensorMultiply.v \
-	addition.v
+	dataqmux.v \
+	main.v \
+	op-areaperim.v \
+	op-attreclass.v \
+	op-basicbuffer.v \
+	op-distdir.v \
+	op-dotproduct.v \
+	op-focalmaxpoolrow.v \
+	op-focalmaxrow.v \
+	op-focalmeanrow.v \
+	op-focalsumrow.v \
+	op-mhdist8.v \
+	op-nop.v \
+	op-normdiffindex.v \
+	op-onemn.v \
+	op-zeromn.v \
+	tinyspu.v \
+	tt_umn_tinyspu.v
 
 ifneq ($(GATES),yes)
 
