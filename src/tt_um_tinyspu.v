@@ -1,4 +1,4 @@
-module tt_umn_tinyspu (
+module tt_um_tinyspu (
     input  wire [7:0] ui_in,   // [7:4] = Op, [3:0] = Q
     output wire [7:0] uo_out,  // [7:4] = M,  [3:0] = N
     input  wire [7:0] uio_in,  // [7:4] = A/C, [3:0] = B/D, based on Q command

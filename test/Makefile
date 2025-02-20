@@ -23,7 +23,7 @@ PROJECT_SOURCES = \
 	op-onemn.v \
 	op-zeromn.v \
 	tinyspu.v \
-	tt_umn_tinyspu.v
+	tt_um_tinyspu.v
 
 ifneq ($(GATES),yes)
 
