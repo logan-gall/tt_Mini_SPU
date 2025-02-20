@@ -9,7 +9,7 @@ PROJECT_SOURCES = \
 	dataqmux.v \
 	main.v \
 	op-areaperim.v \
-	op-attreclass.v \
+	op-attrreclass.v \
 	op-basicbuffer.v \
 	op-distdir.v \
 	op-dotproduct.v \
